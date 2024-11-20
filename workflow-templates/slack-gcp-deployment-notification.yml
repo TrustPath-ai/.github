@@ -1,0 +1,115 @@
+name: Slack GCP Deployment Notification Template
+
+on:
+  workflow_call:
+    inputs:
+      status:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      project_id:
+        required: true
+        type: string
+      function_name:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+      actor:
+        required: true
+        type: string
+      ref_name:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      run_id:
+        required: true
+        type: string
+      server_url:
+        required: true
+        type: string
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack Notification
+        if: always()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "${{ inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Environment:*\n`${{ inputs.environment }}`"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project:*\n`${{ inputs.project_id }}`"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Function:*\n`${{ inputs.function_name }}`"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Triggered by:*\n`${{ inputs.actor }}`"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n`${{ inputs.ref_name }}`"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\n`${{ inputs.status }}`"
+                    }
+                  ]
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "📊 <${{ inputs.server_url }}/${{ inputs.repository }}/actions/runs/${{ inputs.run_id }}|View Deployment Details> • 🔍 <https://console.cloud.google.com/functions/details/${{ inputs.region }}/${{ inputs.function_name }}?env=gen2&project=${{ inputs.project_id }}|View in Cloud Functions Console>"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ vars.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
