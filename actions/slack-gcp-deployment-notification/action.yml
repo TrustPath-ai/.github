@@ -47,13 +47,13 @@ runs:
       with:
         payload: |
           {
-            "text": "${{ inputs.status == 'success' && '✅ ${inputs.service_type} Deployment Successful' || '❌ ${inputs.service_type} Deployment Failed' }}",
+            "text": "${{ inputs.status == 'success' && format('✅ {0} Deployment Successful', inputs.service_type) || format('❌ {0} Deployment Failed', inputs.service_type) }}",
             "blocks": [
               {
                 "type": "header",
                 "text": {
                   "type": "plain_text",
-                  "text": "${{ inputs.status == 'success' && '✅ ${inputs.service_type} Deployment Successful' || '❌ ${inputs.service_type} Deployment Failed' }}",
+                  "text": "${{ inputs.status == 'success' && format('✅ {0} Deployment Successful', inputs.service_type) || format('❌ {0} Deployment Failed', inputs.service_type) }}",
                   "emoji": true
                 }
               },
