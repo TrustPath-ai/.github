@@ -1,6 +1,9 @@
 name: Slack GCP Deployment Notification Template
 
 inputs:
+  service_type:
+    required: true
+    type: string
   status:
     required: true
     type: string
@@ -44,13 +47,13 @@ runs:
       with:
         payload: |
           {
-            "text": "${{ inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
+            "text": "${{ inputs.status == 'success' && '✅ ${inputs.service_type} Deployment Successful' || '❌ ${inputs.service_type} Deployment Failed' }}",
             "blocks": [
               {
                 "type": "header",
                 "text": {
                   "type": "plain_text",
-                  "text": "${{ inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
+                  "text": "${{ inputs.status == 'success' && '✅ ${inputs.service_type} Deployment Successful' || '❌ ${inputs.service_type} Deployment Failed' }}",
                   "emoji": true
                 }
               },
