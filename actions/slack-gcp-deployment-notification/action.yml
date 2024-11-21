@@ -44,13 +44,13 @@ runs:
       with:
         payload: |
           {
-            "text": "${{ github.event.inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
+            "text": "${{ inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
             "blocks": [
               {
                 "type": "header",
                 "text": {
                   "type": "plain_text",
-                  "text": "${{ github.event.inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
+                  "text": "${{ inputs.status == 'success' && '✅ Cloud Function Deployment Successful' || '❌ Cloud Function Deployment Failed' }}",
                   "emoji": true
                 }
               },
