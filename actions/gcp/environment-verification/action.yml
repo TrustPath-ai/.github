@@ -1,0 +1,21 @@
+name: 'Verify Environment'
+description: 'Verifies required environment variables'
+
+inputs:
+  required-vars:
+    description: 'JSON array of required variable names'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Verify variables
+      shell: bash
+      run: |
+        vars='${{ inputs.required-vars }}'
+        for var in $(echo "$vars" | jq -r '.[]'); do
+          if [[ -z "${!var}" ]]; then
+            echo "$var is not set"
+            exit 1
+          fi
+        done
