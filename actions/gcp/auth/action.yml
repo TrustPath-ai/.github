@@ -9,6 +9,18 @@ inputs:
     description: 'Environment to deploy to (dev/staging/prod)'
     required: false
     default: ''
+  prod_project_id:
+    description: 'Production GCP project ID'
+    required: true
+  staging_project_id:
+    description: 'Staging GCP project ID'
+    required: true
+  dev_project_id:
+    description: 'Development GCP project ID'
+    required: true
+  workload_identity_provider:
+    description: 'Workload Identity Provider'
+    required: true
 
 runs:
   using: "composite"
@@ -18,19 +30,19 @@ runs:
       shell: bash
       env:
         INPUT_ENVIRONMENT: ${{ inputs.environment }}
-        PROD_GCP_PROJECT_ID: ${{ vars.PROD_GCP_PROJECT_ID }}
-        STAGING_GCP_PROJECT_ID: ${{ vars.STAGING_GCP_PROJECT_ID }}
-        DEV_GCP_PROJECT_ID: ${{ vars.DEV_GCP_PROJECT_ID }}
+        PROD_GCP_PROJECT_ID: ${{ inputs.prod_project_id }}
+        STAGING_GCP_PROJECT_ID: ${{ inputs.staging_project_id }}
+        DEV_GCP_PROJECT_ID: ${{ inputs.dev_project_id }}
       run: ${{ github.action_path }}/scripts/set-environment.sh
 
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
-        workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
+        workload_identity_provider: ${{ inputs.workload_identity_provider }}
         service_account: "${{ inputs.service_name }}-github@${{ env.PROJECT_ID }}.iam.gserviceaccount.com"
         create_credentials_file: true
         token_format: "access_token"
-        audience: "//iam.googleapis.com/${{ vars.WORKLOAD_IDENTITY_PROVIDER }}"
+        audience: "//iam.googleapis.com/${{ inputs.workload_identity_provider }}"
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
