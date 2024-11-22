@@ -1,0 +1,43 @@
+name: 'GCP Authentication'
+description: 'Authenticates with Google Cloud Platform using Workload Identity Federation'
+
+inputs:
+  service_name:
+    description: 'Name of the service (used to construct service account email e.g. "image-processor-fn")'
+    required: true
+  environment:
+    description: 'Environment to deploy to (dev/staging/prod)'
+    required: false
+    default: 'dev'
+
+outputs:
+  project_id:
+    description: 'The GCP project ID for the selected environment'
+    value: ${{ steps.set_env.outputs.project_id }}
+  environment:
+    description: 'The selected environment'
+    value: ${{ steps.set_env.outputs.env }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set environment variables
+      id: set_env
+      shell: bash
+      run: |
+        # Source the script to set environment variables
+        source ${{ github.action_path }}/scripts/set-environment.sh
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: "${{ inputs.service_name }}-github@${{ env.PROJECT_ID }}.iam.gserviceaccount.com"
+        create_credentials_file: true
+        token_format: "access_token"
+        audience: "//iam.googleapis.com/${{ env.WORKLOAD_IDENTITY_PROVIDER }}"
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.PROJECT_ID }}
