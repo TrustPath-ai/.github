@@ -22,6 +22,14 @@ inputs:
     description: 'Workload Identity Provider'
     required: true
 
+outputs:
+  environment:
+    description: "Selected environment (dev/staging/prod)"
+    value: ${{ steps.set_env.outputs.env }}
+  project_id:
+    description: "Selected GCP project ID"
+    value: ${{ steps.set_env.outputs.project_id }}
+
 runs:
   using: "composite"
   steps:
