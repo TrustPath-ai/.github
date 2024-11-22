@@ -33,7 +33,11 @@ runs:
         PROD_GCP_PROJECT_ID: ${{ inputs.prod_project_id }}
         STAGING_GCP_PROJECT_ID: ${{ inputs.staging_project_id }}
         DEV_GCP_PROJECT_ID: ${{ inputs.dev_project_id }}
-      run: ${{ github.action_path }}/scripts/set-environment.sh
+      run: |
+        # Make script executable
+        chmod +x ${{ github.action_path }}/scripts/set-environment.sh
+        # Run script
+        ${{ github.action_path }}/scripts/set-environment.sh
 
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
