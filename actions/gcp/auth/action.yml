@@ -18,8 +18,14 @@ inputs:
   dev_project_id:
     description: 'Development GCP project ID'
     required: true
-  workload_identity_provider:
-    description: 'Workload Identity Provider'
+  prod_workload_identity_provider:
+    description: 'Production Workload Identity Provider'
+    required: true
+  staging_workload_identity_provider:
+    description: 'Staging Workload Identity Provider'
+    required: true
+  dev_workload_identity_provider:
+    description: 'Development Workload Identity Provider'
     required: true
 
 outputs:
@@ -41,6 +47,9 @@ runs:
         PROD_GCP_PROJECT_ID: ${{ inputs.prod_project_id }}
         STAGING_GCP_PROJECT_ID: ${{ inputs.staging_project_id }}
         DEV_GCP_PROJECT_ID: ${{ inputs.dev_project_id }}
+        PROD_WORKLOAD_IDENTITY_PROVIDER: ${{ inputs.prod_workload_identity_provider }}
+        STAGING_WORKLOAD_IDENTITY_PROVIDER: ${{ inputs.staging_workload_identity_provider }}
+        DEV_WORKLOAD_IDENTITY_PROVIDER: ${{ inputs.dev_workload_identity_provider }}
       run: |
         # Make script executable
         chmod +x ${{ github.action_path }}/scripts/set-environment.sh
