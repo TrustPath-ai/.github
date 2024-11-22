@@ -59,11 +59,11 @@ runs:
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
-        workload_identity_provider: ${{ inputs.workload_identity_provider }}
+        workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
         service_account: "${{ inputs.service_name }}-github@${{ env.PROJECT_ID }}.iam.gserviceaccount.com"
         create_credentials_file: true
         token_format: "access_token"
-        audience: "//iam.googleapis.com/${{ inputs.workload_identity_provider }}"
+        audience: "//iam.googleapis.com/${{ env.WORKLOAD_IDENTITY_PROVIDER }}"
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
