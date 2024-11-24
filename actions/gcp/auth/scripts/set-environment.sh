@@ -10,7 +10,7 @@ if [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
   ENV="${INPUT_ENVIRONMENT}"
 elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
   ENV="prod"
-elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
+elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
   ENV="staging"
 else
   ENV="dev"
